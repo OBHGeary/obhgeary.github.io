@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ollie's Margin Calculator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1 class="header__title">
+                📚 Ollie's Margin Calculator
+            </h1>
+            <p class="header__subtitle">Professional book deal margin calculator</p>
+        </header>
+
+        <!-- Main Calculator -->
+        <main class="calculator">
+            <!-- Book Details Section -->
+            <section class="card">
+                <h2 class="card__title">Book Details</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="title" class="form-label">
+                            Title
+                            <button type="button" class="tooltip-btn" data-tooltip="The name of the book">
+                                ⓘ
+                            </button>
+                        </label>
+                        <input type="text" id="title" class="form-control" placeholder="Enter book title">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="isbn" class="form-label">
+                            ISBN
+                            <button type="button" class="tooltip-btn" data-tooltip="International Standard Book Number">
+                                ⓘ
+                            </button>
+                        </label>
+                        <input type="text" id="isbn" class="form-control" placeholder="Enter ISBN">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Financial Details Section -->
+            <section class="card">
+                <h2 class="card__title">Financial Details</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="rrp" class="form-label">
+                            RRP (Recommended Retail Price)
+                            <button type="button" class="tooltip-btn" data-tooltip="Recommended Retail Price - the price customers pay">
+                                ⓘ
+                            </button>
+                        </label>
+                        <div class="currency-input">
+                            <input type="number" id="rrp" class="form-control" placeholder="0.00" step="0.01" min="0">
+                            <div class="currency-toggle">
+                                <button type="button" class="currency-btn active" data-field="rrp" data-currency="USD">$</button>
+                                <button type="button" class="currency-btn" data-field="rrp" data-currency="GBP">£</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="quantity" class="form-label">
+                            Quantity
+                            <button type="button" class="tooltip-btn" data-tooltip="Number of units to sell">
+                                ⓘ
+                            </button>
+                        </label>
+                        <input type="number" id="quantity" class="form-control" placeholder="0" step="1" min="0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="netPrice" class="form-label">
+                            Net Price per Unit
+                            <button type="button" class="tooltip-btn" data-tooltip="The price you receive per unit (after retailer margin)">
+                                ⓘ
+                            </button>
+                        </label>
+                        <div class="currency-input">
+                            <input type="number" id="netPrice" class="form-control" placeholder="0.00" step="0.01" min="0">
+                            <div class="currency-toggle">
+                                <button type="button" class="currency-btn active" data-field="netPrice" data-currency="USD">$</button>
+                                <button type="button" class="currency-btn" data-field="netPrice" data-currency="GBP">£</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="royalty" class="form-label">
+                            Royalty Percentage
+                            <button type="button" class="tooltip-btn" data-tooltip="Percentage paid to author/rights holder (0-100)">
+                                ⓘ
+                            </button>
+                        </label>
+                        <div class="percentage-input">
+                            <input type="number" id="royalty" class="form-control" placeholder="0" step="0.1" min="0" max="100">
+                            <span class="percentage-symbol">%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="printShipping" class="form-label">
+                            Print / Shipping Price
+                            <button type="button" class="tooltip-btn" data-tooltip="Total cost of printing and shipping per unit">
+                                ⓘ
+                            </button>
+                        </label>
+                        <div class="currency-input">
+                            <input type="number" id="printShipping" class="form-control" placeholder="0.00" step="0.01" min="0">
+                            <div class="currency-toggle">
+                                <button type="button" class="currency-btn active" data-field="printShipping" data-currency="USD">$</button>
+                                <button type="button" class="currency-btn" data-field="printShipping" data-currency="GBP">£</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Summary Section -->
+            <section class="card summary-card">
+                <h2 class="card__title">Calculation Summary</h2>
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <div class="summary-label">Total Gross Revenue</div>
+                        <div class="summary-value" id="grossRevenue">$0.00</div>
+                        <div class="summary-formula">RRP × Quantity</div>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <div class="summary-label">Total Net Revenue</div>
+                        <div class="summary-value" id="netRevenue">$0.00</div>
+                        <div class="summary-formula">(Net Price × Qty) - (Print/Ship × Qty) - (Royalty × Net Price × Qty)</div>
+                    </div>
+                    
+                    <div class="summary-item margin-item">
+                        <div class="summary-label">Margin Percentage</div>
+                        <div class="summary-value margin-value" id="marginPercentage">0.00%</div>
+                        <div class="summary-formula">(Net Revenue ÷ Gross Revenue) × 100</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button type="button" class="btn btn--secondary" id="clearBtn">
+                    🗑️ Clear All
+                </button>
+                <button type="button" class="btn btn--primary" id="copyBtn">
+                    📋 Copy Summary
+                </button>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Exchange Rate: 1 USD = 0.747 GBP | 1 GBP = 1.339 USD</p>
+            <p>All calculations update in real-time</p>
+        </footer>
+
+        <!-- Tooltip -->
+        <div class="tooltip" id="tooltip"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
