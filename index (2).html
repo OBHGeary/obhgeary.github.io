@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ollie's Margin Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .project-bar {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .project-select-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .project-select-group label {
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .project-select-group select {
+            flex: 1;
+            padding: 0.5rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .project-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 968px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .card h2 {
+            color: #2563eb;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #334155;
+            font-size: 0.9rem;
+        }
+
+        .tooltip {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            background: #64748b;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            font-size: 12px;
+            line-height: 16px;
+            cursor: help;
+            margin-left: 5px;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        .currency-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .currency-group input {
+            flex: 1;
+        }
+
+        .currency-toggle {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .currency-btn {
+            padding: 0.5rem 0.75rem;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            color: #64748b;
+        }
+
+        .currency-btn:hover {
+            border-color: #2563eb;
+            color: #2563eb;
+        }
+
+        .currency-btn.active {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+
+        .summary {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .summary h3 {
+            color: #1e40af;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .summary-note {
+            font-size: 0.85rem;
+            color: #64748b;
+            font-style: italic;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            background: white;
+            border-radius: 6px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #cbd5e1;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-item span:first-child {
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .summary-item span:last-child {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .margin-positive {
+            color: #10b981;
+        }
+
+        .margin-negative {
+            color: #ef4444;
+        }
+
+        .breakdown {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .breakdown h4 {
+            color: #64748b;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            font-size: 0.9rem;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1e40af;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-secondary {
+            background: #64748b;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #475569;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-small {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+            border-radius: 6px;
+        }
+
+        .history-list {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s;
+        }
+
+        .history-item:hover {
+            border-color: #2563eb;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 0.75rem;
+        }
+
+        .history-title {
+            font-weight: 700;
+            color: #1e293b;
+            font-size: 1.1rem;
+        }
+
+        .history-isbn {
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+
+        .history-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .history-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .history-detail {
+            font-size: 0.85rem;
+        }
+
+        .history-detail span:first-child {
+            color: #64748b;
+        }
+
+        .history-detail span:last-child {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .history-date {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-top: 0.5rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #64748b;
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            animation: slideIn 0.3s ease;
+            z-index: 1000;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-content h3 {
+            color: #2563eb;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📚 Ollie's Margin Calculator</h1>
+        <p>Calculate book margins with multi-currency support & project organization</p>
+    </div>
+
+    <div class="container">
+        <!-- Project Selection Bar -->
+        <div class="project-bar">
+            <div class="project-select-group">
+                <label>📁 Project:</label>
+                <select id="projectSelect">
+                    <option value="default">Default Project</option>
+                </select>
+            </div>
+            <div class="project-actions">
+                <button class="btn btn-success btn-small" id="newProjectBtn">➕ New Project</button>
+                <button class="btn btn-secondary btn-small" id="renameProjectBtn">✏️ Rename</button>
+                <button class="btn btn-secondary btn-small" id="deleteProjectBtn">🗑️ Delete Project</button>
+                <button class="btn btn-primary btn-small" id="exportProjectBtn">💾 Export Project</button>
+                <button class="btn btn-primary btn-small" id="importProjectBtn">📂 Import Project</button>
+            </div>
+        </div>
+
+        <div class="main-layout">
+            <!-- Calculator Section -->
+            <div class="card">
+                <h2>Book Details</h2>
+
+                <div class="form-group">
+                    <label>Title <span class="tooltip" title="The name of the book">ⓘ</span></label>
+                    <input type="text" id="title" placeholder="Enter book title">
+                </div>
+
+                <div class="form-group">
+                    <label>ISBN <span class="tooltip" title="International Standard Book Number">ⓘ</span></label>
+                    <input type="text" id="isbn" placeholder="Enter ISBN">
+                </div>
+
+                <div class="form-group">
+                    <label>RRP <span class="tooltip" title="Recommended Retail Price - the price customers pay">ⓘ</span></label>
+                    <div class="currency-group">
+                        <input type="number" id="rrp" placeholder="0.00" min="0" step="0.01">
+                        <div class="currency-toggle">
+                            <button class="currency-btn active" data-field="rrp" data-currency="USD">USD</button>
+                            <button class="currency-btn" data-field="rrp" data-currency="GBP">GBP</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Quantity <span class="tooltip" title="Number of units to sell">ⓘ</span></label>
+                    <input type="number" id="quantity" placeholder="0" min="1" step="1">
+                </div>
+
+                <div class="form-group">
+                    <label>Net Price per unit <span class="tooltip" title="The price you receive per unit (after retailer margin)">ⓘ</span></label>
+                    <div class="currency-group">
+                        <input type="number" id="netPrice" placeholder="0.00" min="0" step="0.01">
+                        <div class="currency-toggle">
+                            <button class="currency-btn active" data-field="netPrice" data-currency="USD">USD</button>
+                            <button class="currency-btn" data-field="netPrice" data-currency="GBP">GBP</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Royalty % <span class="tooltip" title="Percentage paid to author/rights holder (0-100)">ⓘ</span></label>
+                    <input type="number" id="royalty" placeholder="0" min="0" max="100" step="0.1">
+                </div>
+
+                <div class="form-group">
+                    <label>Print/Shipping Price per unit <span class="tooltip" title="Cost of printing and shipping per individual unit">ⓘ</span></label>
+                    <div class="currency-group">
+                        <input type="number" id="printShipping" placeholder="0.00" min="0" step="0.01">
+                        <div class="currency-toggle">
+                            <button class="currency-btn active" data-field="printShipping" data-currency="USD">USD</button>
+                            <button class="currency-btn" data-field="printShipping" data-currency="GBP">GBP</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary Section -->
+                <div class="summary">
+                    <h3>Summary (All in USD)</h3>
+                    <div class="summary-note">
+                        💡 All values automatically converted to USD for summary
+                    </div>
+                    <div class="summary-item">
+                        <span>Total Gross Revenue</span>
+                        <span id="grossRevenue">$0.00</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Total Net Revenue</span>
+                        <span id="netRevenue">$0.00</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Margin %</span>
+                        <span id="margin" class="margin-positive">0.00%</span>
+                    </div>
+                </div>
+
+                <!-- Cost Breakdown -->
+                <div class="breakdown">
+                    <h4>Cost Breakdown (in USD)</h4>
+                    <div class="breakdown-item">
+                        <span>Total Revenue from Units</span>
+                        <span id="totalRevenue">$0.00</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Total Print/Shipping Cost</span>
+                        <span id="totalPrintShipping">$0.00</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Total Royalty Cost</span>
+                        <span id="totalRoyalty">$0.00</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Net Profit</span>
+                        <span id="netProfit">$0.00</span>
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="button-group">
+                    <button class="btn btn-primary" id="saveBtn">💾 Save Calculation</button>
+                    <button class="btn btn-secondary" id="newBtn">➕ New Calculation</button>
+                    <button class="btn btn-secondary" id="copyBtn">📋 Copy Summary</button>
+                </div>
+            </div>
+
+            <!-- History Section -->
+            <div class="card">
+                <h2>Saved Calculations</h2>
+                <div id="historyList" class="history-list">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📊</div>
+                        <p>No saved calculations yet.<br>Fill out the form and click Save!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Project Modal -->
+    <div class="modal" id="newProjectModal">
+        <div class="modal-content">
+            <h3>📁 Create New Project</h3>
+            <input type="text" id="newProjectName" placeholder="Enter project name...">
+            <div class="modal-actions">
+                <button class="btn btn-secondary btn-small" onclick="closeModal('newProjectModal')">Cancel</button>
+                <button class="btn btn-primary btn-small" onclick="createNewProject()">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rename Project Modal -->
+    <div class="modal" id="renameProjectModal">
+        <div class="modal-content">
+            <h3>✏️ Rename Project</h3>
+            <input type="text" id="renameProjectName" placeholder="Enter new project name...">
+            <div class="modal-actions">
+                <button class="btn btn-secondary btn-small" onclick="closeModal('renameProjectModal')">Cancel</button>
+                <button class="btn btn-primary btn-small" onclick="renameCurrentProject()">Rename</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden file input for import -->
+    <input type="file" id="importFileInput" accept=".json">
+
+    <div class="footer">
+        Exchange Rate: 1 USD = 0.747 GBP | All data saved automatically to your browser
+    </div>
+
+    <script>
+        // Exchange rates
+        const USD_TO_GBP = 0.747;
+        const GBP_TO_USD = 1.339;
+
+        // State
+        let projects = {};
+        let currentProject = 'default';
+        let editingId = null;
+        let currencyState = {
+            rrp: 'USD',
+            netPrice: 'USD',
+            printShipping: 'USD'
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadFromLocalStorage();
+            setupEventListeners();
+            renderProjectDropdown();
+            loadProjectCalculations();
+            calculate();
+        });
+
+        function setupEventListeners() {
+            // Input listeners
+            const inputs = ['title', 'isbn', 'rrp', 'quantity', 'netPrice', 'royalty', 'printShipping'];
+            inputs.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) element.addEventListener('input', calculate);
+            });
+
+            // Currency toggles
+            document.querySelectorAll('.currency-btn').forEach(btn => {
+                btn.addEventListener('click', handleCurrencyToggle);
+            });
+
+            // Buttons
+            document.getElementById('saveBtn').addEventListener('click', saveCalculation);
+            document.getElementById('newBtn').addEventListener('click', newCalculation);
+            document.getElementById('copyBtn').addEventListener('click', copySummary);
+
+            // Project management
+            document.getElementById('projectSelect').addEventListener('change', switchProject);
+            document.getElementById('newProjectBtn').addEventListener('click', () => openModal('newProjectModal'));
+            document.getElementById('renameProjectBtn').addEventListener('click', () => openModal('renameProjectModal'));
+            document.getElementById('deleteProjectBtn').addEventListener('click', deleteCurrentProject);
+            document.getElementById('exportProjectBtn').addEventListener('click', exportCurrentProject);
+            document.getElementById('importProjectBtn').addEventListener('click', () => document.getElementById('importFileInput').click());
+            document.getElementById('importFileInput').addEventListener('change', importProject);
+        }
+
+        // LocalStorage Functions
+        function saveToLocalStorage() {
+            try {
+                localStorage.setItem('olliesCalculatorProjects', JSON.stringify(projects));
+                localStorage.setItem('olliesCalculatorCurrentProject', currentProject);
+            } catch (e) {
+                console.log('LocalStorage not available, data will not persist');
+            }
+        }
+
+        function loadFromLocalStorage() {
+            try {
+                const savedProjects = localStorage.getItem('olliesCalculatorProjects');
+                const savedCurrentProject = localStorage.getItem('olliesCalculatorCurrentProject');
+
+                if (savedProjects) {
+                    projects = JSON.parse(savedProjects);
+                } else {
+                    projects = { default: [] };
+                }
+
+                if (savedCurrentProject) {
+                    currentProject = savedCurrentProject;
+                } else {
+                    currentProject = 'default';
+                }
+            } catch (e) {
+                console.log('LocalStorage not available');
+                projects = { default: [] };
+                currentProject = 'default';
+            }
+        }
+
+        // Project Management
+        function renderProjectDropdown() {
+            const select = document.getElementById('projectSelect');
+            select.innerHTML = '';
+
+            Object.keys(projects).forEach(projectName => {
+                const option = document.createElement('option');
+                option.value = projectName;
+                option.textContent = projectName.charAt(0).toUpperCase() + projectName.slice(1).replace(/-/g, ' ');
+                if (projectName === currentProject) option.selected = true;
+                select.appendChild(option);
+            });
+        }
+
+        function switchProject(e) {
+            currentProject = e.target.value;
+            saveToLocalStorage();
+            loadProjectCalculations();
+            newCalculation();
+        }
+
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function createNewProject() {
+            const name = document.getElementById('newProjectName').value.trim();
+            if (!name) {
+                showMessage('⚠️ Please enter a project name', '#ef4444');
+                return;
+            }
+
+            const projectKey = name.toLowerCase().replace(/\s+/g, '-');
+
+            if (projects[projectKey]) {
+                showMessage('⚠️ Project already exists', '#ef4444');
+                return;
+            }
+
+            projects[projectKey] = [];
+            currentProject = projectKey;
+            saveToLocalStorage();
+            renderProjectDropdown();
+            loadProjectCalculations();
+            closeModal('newProjectModal');
+            document.getElementById('newProjectName').value = '';
+            showMessage('✅ Project created!', '#10b981');
+        }
+
+        function renameCurrentProject() {
+            const newName = document.getElementById('renameProjectName').value.trim();
+            if (!newName) {
+                showMessage('⚠️ Please enter a project name', '#ef4444');
+                return;
+            }
+
+            if (currentProject === 'default') {
+                showMessage('⚠️ Cannot rename default project', '#ef4444');
+                return;
+            }
+
+            const newKey = newName.toLowerCase().replace(/\s+/g, '-');
+
+            if (projects[newKey] && newKey !== currentProject) {
+                showMessage('⚠️ Project name already exists', '#ef4444');
+                return;
+            }
+
+            projects[newKey] = projects[currentProject];
+            delete projects[currentProject];
+            currentProject = newKey;
+            saveToLocalStorage();
+            renderProjectDropdown();
+            closeModal('renameProjectModal');
+            document.getElementById('renameProjectName').value = '';
+            showMessage('✅ Project renamed!', '#10b981');
+        }
+
+        function deleteCurrentProject() {
+            if (currentProject === 'default') {
+                showMessage('⚠️ Cannot delete default project', '#ef4444');
+                return;
+            }
+
+            if (!confirm(`Are you sure you want to delete project "${currentProject}" and all its calculations?`)) {
+                return;
+            }
+
+            delete projects[currentProject];
+            currentProject = 'default';
+            saveToLocalStorage();
+            renderProjectDropdown();
+            loadProjectCalculations();
+            newCalculation();
+            showMessage('🗑️ Project deleted', '#64748b');
+        }
+
+        function exportCurrentProject() {
+            const projectData = {
+                projectName: currentProject,
+                calculations: projects[currentProject] || [],
+                exportDate: new Date().toISOString()
+            };
+
+            const dataStr = JSON.stringify(projectData, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${currentProject}-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+            showMessage('💾 Project exported!', '#10b981');
+        }
+
+        function importProject(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    const importedData = JSON.parse(event.target.result);
+
+                    if (!importedData.projectName || !importedData.calculations) {
+                        showMessage('⚠️ Invalid project file', '#ef4444');
+                        return;
+                    }
+
+                    let projectKey = importedData.projectName;
+                    if (projects[projectKey]) {
+                        const timestamp = Date.now();
+                        projectKey = `${projectKey}-imported-${timestamp}`;
+                    }
+
+                    projects[projectKey] = importedData.calculations;
+                    currentProject = projectKey;
+                    saveToLocalStorage();
+                    renderProjectDropdown();
+                    loadProjectCalculations();
+                    showMessage('✅ Project imported!', '#10b981');
+                } catch (error) {
+                    showMessage('⚠️ Error importing file', '#ef4444');
+                }
+            };
+            reader.readAsText(file);
+            e.target.value = '';
+        }
+
+        function loadProjectCalculations() {
+            if (!projects[currentProject]) {
+                projects[currentProject] = [];
+            }
+            renderHistory();
+        }
+
+        // Currency and calculation functions
+        function handleCurrencyToggle(e) {
+            const btn = e.target;
+            const field = btn.dataset.field;
+            const newCurrency = btn.dataset.currency;
+            const currentCurrency = currencyState[field];
+
+            if (newCurrency === currentCurrency) return;
+
+            const input = document.getElementById(field);
+            let value = parseFloat(input.value) || 0;
+
+            if (currentCurrency === 'USD' && newCurrency === 'GBP') {
+                value = value * USD_TO_GBP;
+            } else if (currentCurrency === 'GBP' && newCurrency === 'USD') {
+                value = value * GBP_TO_USD;
+            }
+
+            input.value = value.toFixed(2);
+            currencyState[field] = newCurrency;
+
+            const buttons = document.querySelectorAll(`[data-field="${field}"]`);
+            buttons.forEach(b => {
+                b.classList.toggle('active', b.dataset.currency === newCurrency);
+            });
+
+            calculate();
+        }
+
+        function toUSD(value, currency) {
+            if (currency === 'GBP') return value * GBP_TO_USD;
+            return value;
+        }
+
+        function calculate() {
+            const rrp = parseFloat(document.getElementById('rrp').value) || 0;
+            const quantity = parseInt(document.getElementById('quantity').value) || 0;
+            const netPrice = parseFloat(document.getElementById('netPrice').value) || 0;
+            const royalty = parseFloat(document.getElementById('royalty').value) || 0;
+            const printShipping = parseFloat(document.getElementById('printShipping').value) || 0;
+
+            const rrpUSD = toUSD(rrp, currencyState.rrp);
+            const netPriceUSD = toUSD(netPrice, currencyState.netPrice);
+            const printShippingUSD = toUSD(printShipping, currencyState.printShipping);
+
+            const grossRevenue = rrpUSD * quantity;
+            const totalRevenue = netPriceUSD * quantity;
+            const totalPrintShipping = printShippingUSD * quantity;
+            const totalRoyalty = (royalty / 100) * netPriceUSD * quantity;
+            const netRevenue = totalRevenue - totalPrintShipping - totalRoyalty;
+            const marginPercent = grossRevenue > 0 ? (netRevenue / grossRevenue) * 100 : 0;
+
+            document.getElementById('grossRevenue').textContent = `$${grossRevenue.toFixed(2)}`;
+            document.getElementById('netRevenue').textContent = `$${netRevenue.toFixed(2)}`;
+            document.getElementById('totalRevenue').textContent = `$${totalRevenue.toFixed(2)}`;
+            document.getElementById('totalPrintShipping').textContent = `$${totalPrintShipping.toFixed(2)}`;
+            document.getElementById('totalRoyalty').textContent = `$${totalRoyalty.toFixed(2)}`;
+            document.getElementById('netProfit').textContent = `$${netRevenue.toFixed(2)}`;
+
+            const marginEl = document.getElementById('margin');
+            marginEl.textContent = `${marginPercent.toFixed(2)}%`;
+            marginEl.className = marginPercent >= 0 ? 'margin-positive' : 'margin-negative';
+        }
+
+        function saveCalculation() {
+            const title = document.getElementById('title').value;
+            const isbn = document.getElementById('isbn').value;
+
+            if (!title || !isbn) {
+                showMessage('⚠️ Please enter at least Title and ISBN', '#ef4444');
+                return;
+            }
+
+            const calculation = {
+                id: editingId || Date.now(),
+                title: title,
+                isbn: isbn,
+                rrp: parseFloat(document.getElementById('rrp').value) || 0,
+                rrpCurrency: currencyState.rrp,
+                quantity: parseInt(document.getElementById('quantity').value) || 0,
+                netPrice: parseFloat(document.getElementById('netPrice').value) || 0,
+                netPriceCurrency: currencyState.netPrice,
+                royalty: parseFloat(document.getElementById('royalty').value) || 0,
+                printShipping: parseFloat(document.getElementById('printShipping').value) || 0,
+                printShippingCurrency: currencyState.printShipping,
+                timestamp: new Date().toLocaleString()
+            };
+
+            if (editingId) {
+                const index = projects[currentProject].findIndex(c => c.id === editingId);
+                if (index !== -1) {
+                    projects[currentProject][index] = calculation;
+                }
+                showMessage('✅ Calculation updated!', '#10b981');
+                editingId = null;
+                document.getElementById('saveBtn').textContent = '💾 Save Calculation';
+            } else {
+                projects[currentProject].unshift(calculation);
+                showMessage('✅ Calculation saved!', '#10b981');
+            }
+
+            saveToLocalStorage();
+            renderHistory();
+        }
+
+        function newCalculation() {
+            document.getElementById('title').value = '';
+            document.getElementById('isbn').value = '';
+            document.getElementById('rrp').value = '';
+            document.getElementById('quantity').value = '';
+            document.getElementById('netPrice').value = '';
+            document.getElementById('royalty').value = '';
+            document.getElementById('printShipping').value = '';
+
+            currencyState = { rrp: 'USD', netPrice: 'USD', printShipping: 'USD' };
+
+            document.querySelectorAll('.currency-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.currency === 'USD');
+            });
+
+            editingId = null;
+            document.getElementById('saveBtn').textContent = '💾 Save Calculation';
+            calculate();
+        }
+
+        function loadCalculation(id) {
+            const calc = projects[currentProject].find(c => c.id === id);
+            if (!calc) return;
+
+            document.getElementById('title').value = calc.title;
+            document.getElementById('isbn').value = calc.isbn;
+            document.getElementById('rrp').value = calc.rrp;
+            document.getElementById('quantity').value = calc.quantity;
+            document.getElementById('netPrice').value = calc.netPrice;
+            document.getElementById('royalty').value = calc.royalty;
+            document.getElementById('printShipping').value = calc.printShipping;
+
+            currencyState = {
+                rrp: calc.rrpCurrency,
+                netPrice: calc.netPriceCurrency,
+                printShipping: calc.printShippingCurrency
+            };
+
+            ['rrp', 'netPrice', 'printShipping'].forEach(field => {
+                const buttons = document.querySelectorAll(`[data-field="${field}"]`);
+                buttons.forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.currency === currencyState[field]);
+                });
+            });
+
+            editingId = id;
+            document.getElementById('saveBtn').textContent = '✅ Update Calculation';
+            calculate();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function deleteCalculation(id) {
+            if (!confirm('Are you sure you want to delete this calculation?')) return;
+
+            projects[currentProject] = projects[currentProject].filter(c => c.id !== id);
+            saveToLocalStorage();
+            renderHistory();
+            showMessage('🗑️ Calculation deleted', '#64748b');
+        }
+
+        function renderHistory() {
+            const container = document.getElementById('historyList');
+            const calculations = projects[currentProject] || [];
+
+            if (calculations.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📊</div>
+                        <p>No saved calculations yet.<br>Fill out the form and click Save!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = calculations.map(calc => {
+                const rrpUSD = toUSD(calc.rrp, calc.rrpCurrency);
+                const netPriceUSD = toUSD(calc.netPrice, calc.netPriceCurrency);
+                const printShippingUSD = toUSD(calc.printShipping, calc.printShippingCurrency);
+
+                const grossRevenue = rrpUSD * calc.quantity;
+                const totalRevenue = netPriceUSD * calc.quantity;
+                const totalPrintShipping = printShippingUSD * calc.quantity;
+                const totalRoyalty = (calc.royalty / 100) * netPriceUSD * calc.quantity;
+                const netRevenue = totalRevenue - totalPrintShipping - totalRoyalty;
+                const marginPercent = grossRevenue > 0 ? (netRevenue / grossRevenue) * 100 : 0;
+                const marginClass = marginPercent >= 0 ? 'margin-positive' : 'margin-negative';
+
+                return `
+                    <div class="history-item">
+                        <div class="history-header">
+                            <div>
+                                <div class="history-title">${calc.title}</div>
+                                <div class="history-isbn">ISBN: ${calc.isbn}</div>
+                            </div>
+                            <div class="history-actions">
+                                <button class="btn btn-primary btn-small" onclick="loadCalculation(${calc.id})">✏️ Edit</button>
+                                <button class="btn btn-secondary btn-small" onclick="deleteCalculation(${calc.id})">🗑️</button>
+                            </div>
+                        </div>
+                        <div class="history-details">
+                            <div class="history-detail">
+                                <span>Margin: </span>
+                                <span class="${marginClass}">${marginPercent.toFixed(2)}%</span>
+                            </div>
+                            <div class="history-detail">
+                                <span>Quantity: </span>
+                                <span>${calc.quantity}</span>
+                            </div>
+                            <div class="history-detail">
+                                <span>Gross Revenue: </span>
+                                <span>$${grossRevenue.toFixed(2)}</span>
+                            </div>
+                            <div class="history-detail">
+                                <span>Net Revenue: </span>
+                                <span>$${netRevenue.toFixed(2)}</span>
+                            </div>
+                        </div>
+                        <div class="history-date">Saved: ${calc.timestamp}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function copySummary() {
+            const rrpCurr = currencyState.rrp === 'GBP' ? '£' : '$';
+            const netCurr = currencyState.netPrice === 'GBP' ? '£' : '$';
+            const printCurr = currencyState.printShipping === 'GBP' ? '£' : '$';
+
+            const text = `
+Book Margin Summary - Project: ${currentProject}
+===================
+Title: ${document.getElementById('title').value}
+ISBN: ${document.getElementById('isbn').value}
+
+Input Values:
+- RRP: ${rrpCurr}${document.getElementById('rrp').value} (${currencyState.rrp})
+- Net Price: ${netCurr}${document.getElementById('netPrice').value} (${currencyState.netPrice})
+- Print/Shipping: ${printCurr}${document.getElementById('printShipping').value} (${currencyState.printShipping})
+- Quantity: ${document.getElementById('quantity').value}
+- Royalty: ${document.getElementById('royalty').value}%
+
+Summary (all in USD):
+- Total Gross Revenue: ${document.getElementById('grossRevenue').textContent}
+- Total Net Revenue: ${document.getElementById('netRevenue').textContent}
+- Margin: ${document.getElementById('margin').textContent}
+
+Cost Breakdown (in USD):
+- Total Revenue from Units: ${document.getElementById('totalRevenue').textContent}
+- Total Print/Shipping: ${document.getElementById('totalPrintShipping').textContent}
+- Total Royalty: ${document.getElementById('totalRoyalty').textContent}
+- Net Profit: ${document.getElementById('netProfit').textContent}
+            `.trim();
+
+            navigator.clipboard.writeText(text).then(() => {
+                showMessage('📋 Copied to clipboard!', '#10b981');
+            });
+        }
+
+        function showMessage(text, color) {
+            const msg = document.createElement('div');
+            msg.className = 'message';
+            msg.textContent = text;
+            msg.style.background = color;
+            document.body.appendChild(msg);
+
+            setTimeout(() => {
+                msg.remove();
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
